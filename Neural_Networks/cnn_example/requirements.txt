@@ -17,4 +17,4 @@ jupyter>=1.0.0
 ipykernel>=6.0.0
 
 # Additional utilities that might be needed
-Pillow>=8.0.0
+Pillow>=8.0.0`
