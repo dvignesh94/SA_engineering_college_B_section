@@ -5,11 +5,6 @@ import matplotlib.pyplot as plt
 from typing import List, Tuple
 import re
 import os
-import sys
-
-# Add the parent directory to the path to import asset_manager
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from asset_manager import AssetManager
 
 class SimpleRNN(nn.Module):
     """A simple RNN for text processing"""
@@ -29,8 +24,10 @@ class SimpleRNN(nn.Module):
 
 class InteractiveRNNDemo:
     def __init__(self):
-        # Initialize asset manager
-        self.am = AssetManager()
+        # Determine output directory for plots relative to repo root
+        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        self.plots_dir = os.path.join(repo_root, 'Datasets', 'neural_networks', 'plots')
+        os.makedirs(self.plots_dir, exist_ok=True)
         
         # Create vocabulary from common words
         self.vocab = {
@@ -191,14 +188,10 @@ class InteractiveRNNDemo:
         
         plt.tight_layout()
         
-        # Save plot using asset manager
-        plot_path = self.am.get_asset_path('neural_networks', 'plots', 'rnn_comparison.png')
+        # Save plot locally without asset manager
+        plot_path = os.path.join(self.plots_dir, 'rnn_comparison.png')
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.show()
-        
-        # Register the plot asset
-        self.am.register_asset('neural_networks', 'plots', 'rnn_comparison.png', 
-                              plot_path, {'type': 'comparison', 'model': 'RNN'})
         print(f"📊 Comparison plot saved: {plot_path}")
     
     def analyze_single_text(self, text: str):
@@ -265,14 +258,10 @@ class InteractiveRNNDemo:
         
         plt.tight_layout()
         
-        # Save plot using asset manager
-        plot_path = self.am.get_asset_path('neural_networks', 'plots', 'rnn_single_analysis.png')
+        # Save plot locally without asset manager
+        plot_path = os.path.join(self.plots_dir, 'rnn_single_analysis.png')
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.show()
-        
-        # Register the plot asset
-        self.am.register_asset('neural_networks', 'plots', 'rnn_single_analysis.png', 
-                              plot_path, {'type': 'single_analysis', 'model': 'RNN'})
         print(f"📊 Single analysis plot saved: {plot_path}")
     
     def run(self):
