@@ -1,0 +1,20 @@
+# Core dependencies for Flower Recognition CNN project
+# Computer Vision and Image Processing
+opencv-python>=4.5.0
+
+# Data Science and Machine Learning
+numpy>=1.21.0
+scikit-learn>=1.0.0
+
+# Deep Learning Framework
+tensorflow>=2.8.0
+
+# Data Visualization
+matplotlib>=3.5.0
+
+# Jupyter Notebook support (if running as notebook)
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# Additional utilities that might be needed
+Pillow>=8.0.0`
