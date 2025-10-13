@@ -1,0 +1,131 @@
+{
+  "name": "Simple Text to Image",
+  "description": "Simple text-to-image workflow for basic generation",
+  "category": "text-to-image",
+  "version": "1.0.0",
+  "parameters": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "default": ""
+    },
+    "negative_prompt": {
+      "type": "string",
+      "required": false,
+      "default": ""
+    },
+    "width": {
+      "type": "integer",
+      "required": false,
+      "default": 512,
+      "min": 64,
+      "max": 2048
+    },
+    "height": {
+      "type": "integer",
+      "required": false,
+      "default": 512,
+      "min": 64,
+      "max": 2048
+    },
+    "steps": {
+      "type": "integer",
+      "required": false,
+      "default": 20,
+      "min": 1,
+      "max": 100
+    },
+    "cfg_scale": {
+      "type": "float",
+      "required": false,
+      "default": 7.0,
+      "min": 1.0,
+      "max": 20.0
+    },
+    "seed": {
+      "type": "integer",
+      "required": false,
+      "default": 0
+    }
+  },
+  "workflow": {
+    "1": {
+      "inputs": {
+        "ckpt_name": "v1-5-pruned-emaonly-fp16.safetensors"
+      },
+      "class_type": "CheckpointLoaderSimple",
+      "_meta": {
+        "title": "Load Checkpoint"
+      }
+    },
+    "2": {
+      "inputs": {
+        "text": "{{prompt}}",
+        "clip": ["1", 1]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)"
+      }
+    },
+    "3": {
+      "inputs": {
+        "text": "{{negative_prompt}}",
+        "clip": ["1", 1]
+      },
+      "class_type": "CLIPTextEncode",
+      "_meta": {
+        "title": "CLIP Text Encode (Prompt)"
+      }
+    },
+    "4": {
+      "inputs": {
+        "width": "{{width}}",
+        "height": "{{height}}",
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage",
+      "_meta": {
+        "title": "Empty Latent Image"
+      }
+    },
+    "5": {
+      "inputs": {
+        "seed": "{{seed}}",
+        "steps": "{{steps}}",
+        "cfg": "{{cfg_scale}}",
+        "sampler_name": "euler",
+        "scheduler": "normal",
+        "denoise": 1.0,
+        "model": ["1", 0],
+        "positive": ["2", 0],
+        "negative": ["3", 0],
+        "latent_image": ["4", 0]
+      },
+      "class_type": "KSampler",
+      "_meta": {
+        "title": "KSampler"
+      }
+    },
+    "6": {
+      "inputs": {
+        "samples": ["5", 0],
+        "vae": ["1", 2]
+      },
+      "class_type": "VAEDecode",
+      "_meta": {
+        "title": "VAE Decode"
+      }
+    },
+    "7": {
+      "inputs": {
+        "filename_prefix": "ComfyUI",
+        "images": ["6", 0]
+      },
+      "class_type": "SaveImage",
+      "_meta": {
+        "title": "Save Image"
+      }
+    }
+  }
+}
